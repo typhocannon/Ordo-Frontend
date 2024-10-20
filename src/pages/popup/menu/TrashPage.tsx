@@ -3,7 +3,6 @@ import {
   Button,
   Divider,
   HStack,
-  Input,
   Text,
   Wrap,
   WrapItem,
@@ -14,7 +13,6 @@ import {
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
-  filter,
 } from "@chakra-ui/react";
 import { faTrash, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -25,6 +23,8 @@ import ErrorPage from "./ErrorPage";
 
 interface deletedEmails {
   name: string;
+  id: string;
+  From: string;
 }
 
 export default function TrashPage() {
@@ -49,7 +49,7 @@ export default function TrashPage() {
       // const data = await response.json();
       // setFilterList(data);
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      setFilterList(["Test1", "Test2", "Test3", "Test4", "Test5"]);
+      setFilterList(["Test1", "Test2", "Test3", "Test4", "Test5", "Test2", "Test3", "Test4", "Test5", "Test2", "Test3", "Test4", "Test5", "Test2", "Test3", "Test4", "Test5", "Test2", "Test3", "Test4", "Test5", "Test2", "Test3", "Test4", "Test5"]);
     };
 
     const fetchStores = async () => {
@@ -57,7 +57,7 @@ export default function TrashPage() {
       // const data = await response.json();
       // setStoreList(data);
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      setStoreList(["Adidas", "Nike", "Hollister", "Supreme", "Uniqlo"]);
+      setStoreList(["Adidas", "Nike", "Hollister", "Supreme", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo"]);
     };
     try {
       fetchFilters();
@@ -89,15 +89,15 @@ export default function TrashPage() {
       // setDeletedEmails(deletedEmailsData);
 
       setDeletedEmails([
-        { name: "Test9gskdfskfdsgjkfdsjkglfdslkghfsdkljh" },
-        { name: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" },
-        { name: "Test3" },
-        { name: "Test4" },
-        { name: "Test5" },
-        { name: "Test6" },
-        { name: "Test7" },
-        { name: "Test8" },
-        { name: "Test9gskdfskfdsgjkfdsjkglfdslkghfsdkljh" },
+        { name: "Test9gskdfskfdsgjkfdsjkglfdslkghfsdkljh", id: "1", From: "Test1" },
+        { name: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", id: "1", From: "Test1"  },
+        { name: "Test3", id: "1", From: "Test1"  },
+        { name: "Test4", id: "1", From: "Test1"  },
+        { name: "Test5", id: "1", From: "Test1"  },
+        { name: "Test6", id: "1", From: "Test1"  },
+        { name: "Test7", id: "1", From: "Test1"  },
+        { name: "Test8", id: "1", From: "Test1"  },
+        { name: "Test9gskdfskfdsgjkfdsjkglfdslkghfsdkljh", id: "1", From: "Test1"  },
       ]);
 
       setSelectedFilters([]);
@@ -205,7 +205,7 @@ export default function TrashPage() {
                 onClick={handleDeleteConfirmation}
                 disabled={loading}
               >
-                Delete
+                Confirm
               </Button>
             </>
           ) : (
@@ -263,7 +263,7 @@ export default function TrashPage() {
           <Text fontSize="xs" fontWeight="bold">
             Categories
           </Text>
-          <Wrap p={2}>
+          <Wrap p={2} h={16} overflow="scroll">
             {filterList.map((filter) => (
               <WrapItem>
                 <ToggleButton name={filter} setList={setSelectedFilters} />
@@ -308,8 +308,8 @@ export default function TrashPage() {
             </NumberInput>
           </HStack>
           <Box>
-            <Text>Store</Text>
-            <Wrap>
+            <Text fontWeight="bold">Store</Text>
+            <Wrap h={14} overflow="scroll">
               {storeList.map((store) => (
                 <WrapItem>
                   <ToggleButton name={store} setList={setSelectedStores} />

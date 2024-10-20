@@ -22,21 +22,13 @@ export default function OrganizePage() {
   const [error, setError] = useState(false);
   const [organizePhase, setOrganizePhase] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [labels, setLabels] = useState([
-    { name: "Schoolgsajfghfdsjglkdfsjlh", color: "red" },
-    { name: "School", color: "orange" },
-    { name: "Parent", color: "yellow" },
-    { name: "Store", color: "green" },
-    { name: "Nike", color: "blue" },
-    { name: "Adidas", color: "purple" },
-  ] as label[]);
-  
+  const [labels, setLabels] = useState([] as label[]);
+
   function handleCancel() {
     setOrganizePhase(0);
   }
 
-  function handleOrganize() {
-    setLoading(true);
+  async function handleOrganize() {
     async function organizeEmails() {
       console.log("Organizing Emails");
       await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -44,20 +36,27 @@ export default function OrganizePage() {
       // const labelResponse = await fetch("http://localhost:5000/labels");
       // const labelData = await labelResponse.json();
       // setLabels(labelData);
-
-      setLoading(false);
+      setLabels([
+        { name: "Schoolgsajfghfdsjglkdfsjlh", color: "red" },
+        { name: "School", color: "orange" },
+        { name: "Parent", color: "yellow" },
+        { name: "Store", color: "green" },
+        { name: "Nike", color: "blue" },
+        { name: "Adidas", color: "purple" },
+      ]);
       setOrganizePhase(1);
     }
     try {
-      organizeEmails();
-    }
-    catch (error) {
+      setLoading(true);
+      await organizeEmails();
+    } catch (error) {
       setError(true);
+    } finally {
+      setLoading(false);
     }
   }
 
-  function handleOrganizeConfirmation() {
-    setLoading(true);
+  async function handleOrganizeConfirmation() {
     async function confirmOrganizeEmails() {
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
@@ -71,19 +70,20 @@ export default function OrganizePage() {
 
       setLoading(false);
       setOrganizePhase(2);
-      
+
       // add a delay so the user can see the success message
       await new Promise((resolve) => setTimeout(resolve, 2000));
       setOrganizePhase(0);
     }
 
     try {
-      confirmOrganizeEmails();
-    }
-    catch (error) {
+      setLoading(true);
+      await confirmOrganizeEmails();
+    } catch (error) {
       setError(true);
+    } finally {
+      setLoading(false);
     }
-
   }
 
   if (error) {

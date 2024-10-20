@@ -14,10 +14,11 @@ import {
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
+  filter,
 } from "@chakra-ui/react";
 import { faTrash, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ToggleButton from "../custom/ToggleButton";
 import ListItem from "../custom/ListItem";
 import ErrorPage from "./ErrorPage";
@@ -28,29 +29,13 @@ interface deletedEmails {
 
 export default function TrashPage() {
   const [error, setError] = useState(false);
-  const [filterList, setFilterList] = useState(["Test1", "Test2"]);
-  const [storeList, setStoreList] = useState([
-    "Store1",
-    "Store2",
-    "Store2",
-    "Store2",
-    "Store2",
-  ]);
+  const [filterList, setFilterList] = useState([] as string[]);
+  const [storeList, setStoreList] = useState([] as string[]);
 
   const [selectedFilters, setSelectedFilters] = useState([] as string[]);
   const [selectedStores, setSelectedStores] = useState([] as string[]);
 
-  const [deletedEmails, setDeletedEmails] = useState([
-    { name: "Test9gskdfskfdsgjkfdsjkglfdslkghfsdkljh" },
-    { name: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" },
-    { name: "Test3" },
-    { name: "Test4" },
-    { name: "Test5" },
-    { name: "Test6" },
-    { name: "Test7" },
-    { name: "Test8" },
-    { name: "Test9gskdfskfdsgjkfdsjkglfdslkghfsdkljh" },
-  ] as deletedEmails[]);
+  const [deletedEmails, setDeletedEmails] = useState([] as deletedEmails[]);
 
   const [minDiscount, setMinDiscount] = useState(0);
   const [maxDiscount, setMaxDiscount] = useState(100);
@@ -58,13 +43,35 @@ export default function TrashPage() {
   const [deletePhase, setDeletePhase] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  function handleDelete() {
+  useEffect(() => {
+    const fetchFilters = async () => {
+      // const response = await fetch("http://localhost:5000/filters");
+      // const data = await response.json();
+      // setFilterList(data);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      setFilterList(["Test1", "Test2", "Test3", "Test4", "Test5"]);
+    };
+
+    const fetchStores = async () => {
+      // const response = await fetch("http://localhost:5000/stores");
+      // const data = await response.json();
+      // setStoreList(data);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      setStoreList(["Adidas", "Nike", "Hollister", "Supreme", "Uniqlo"]);
+    };
+    try {
+      fetchFilters();
+      fetchStores();
+    } catch (e) {
+      setError(true);
+    }
+  }, []);
+
+  async function handleDelete() {
     if (minDiscount > maxDiscount) {
       return;
     }
 
-    setLoading(true);
-  
     async function deleteEmails() {
       await new Promise((resolve) => setTimeout(resolve, 2000));
       // const deletedEmailsResponse = await fetch("http://localhost:5000/deletedEmails",{
@@ -80,21 +87,35 @@ export default function TrashPage() {
       // });
       // const deletedEmailsData = await deletedEmailsResponse.json();
       // setDeletedEmails(deletedEmailsData);
+
+      setDeletedEmails([
+        { name: "Test9gskdfskfdsgjkfdsjkglfdslkghfsdkljh" },
+        { name: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" },
+        { name: "Test3" },
+        { name: "Test4" },
+        { name: "Test5" },
+        { name: "Test6" },
+        { name: "Test7" },
+        { name: "Test8" },
+        { name: "Test9gskdfskfdsgjkfdsjkglfdslkghfsdkljh" },
+      ]);
+
       setSelectedFilters([]);
       setSelectedStores([]);
-      setLoading(false);
       setDeletePhase(1);
     }
+
     try {
-      deleteEmails();
-    }
-    catch (e) {
+      setLoading(true);
+      await deleteEmails();
+    } catch (e) {
       setError(true);
+    } finally {
+      setLoading(false);
     }
   }
 
-  function handleDeleteConfirmation() {
-    setLoading(true);
+  async function handleDeleteConfirmation() {
     async function confirmDeleteEmails() {
       console.log("Deleting Emails");
       await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -106,12 +127,18 @@ export default function TrashPage() {
       //   body: JSON.stringify(deletedEmails),
       // });
       setDeletedEmails([]);
-      setLoading(false);
       setDeletePhase(2);
       await new Promise((resolve) => setTimeout(resolve, 2000));
       setDeletePhase(0);
     }
-    confirmDeleteEmails();
+    try {
+      setLoading(true);
+      await confirmDeleteEmails();
+    } catch (e) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
   }
 
   function handleCancel() {
@@ -119,8 +146,20 @@ export default function TrashPage() {
   }
 
   if (error) {
+    return <ErrorPage />;
+  }
+
+  if (!filterList.length || !storeList.length) {
     return (
-      <ErrorPage />
+      <Box className="flex flex-col justify-center items-center mt-32">
+        <Spinner
+          thickness="4px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="blue.500"
+          size="xl"
+        />
+      </Box>
     )
   }
 
@@ -143,9 +182,15 @@ export default function TrashPage() {
         <Box>
           <Box h={260} p={4} m={4} bg="lightgray" overflow="auto">
             <VStack gap={4}>
-            {deletedEmails.map((email) => {
-                return <ListItem name={email.name} currentList={deletedEmails} setList={setDeletedEmails} />
-            })}
+              {deletedEmails.map((email) => {
+                return (
+                  <ListItem
+                    name={email.name}
+                    currentList={deletedEmails}
+                    setList={setDeletedEmails}
+                  />
+                );
+              })}
             </VStack>
           </Box>
         </Box>

@@ -11,6 +11,7 @@ import { faCircleCheck, faGear } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import ListItem from "../custom/ListItem";
+import ErrorPage from "./ErrorPage";
 
 interface label {
   name: string;
@@ -18,6 +19,7 @@ interface label {
 }
 
 export default function OrganizePage() {
+  const [error, setError] = useState(false);
   const [organizePhase, setOrganizePhase] = useState(0);
   const [loading, setLoading] = useState(false);
   const [labels, setLabels] = useState([
@@ -28,7 +30,7 @@ export default function OrganizePage() {
     { name: "Nike", color: "blue" },
     { name: "Adidas", color: "purple" },
   ] as label[]);
-
+  
   function handleCancel() {
     setOrganizePhase(0);
   }
@@ -38,23 +40,54 @@ export default function OrganizePage() {
     async function organizeEmails() {
       console.log("Organizing Emails");
       await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      // const labelResponse = await fetch("http://localhost:5000/labels");
+      // const labelData = await labelResponse.json();
+      // setLabels(labelData);
+
       setLoading(false);
       setOrganizePhase(1);
     }
-    organizeEmails();
+    try {
+      organizeEmails();
+    }
+    catch (error) {
+      setError(true);
+    }
   }
 
   function handleOrganizeConfirmation() {
     setLoading(true);
     async function confirmOrganizeEmails() {
-      console.log("Organizing Emails");
       await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      // await fetch("http://localhost:5000/labels", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(labels),
+      // });
+
       setLoading(false);
       setOrganizePhase(2);
+      
+      // add a delay so the user can see the success message
       await new Promise((resolve) => setTimeout(resolve, 2000));
       setOrganizePhase(0);
     }
-    confirmOrganizeEmails();
+
+    try {
+      confirmOrganizeEmails();
+    }
+    catch (error) {
+      setError(true);
+    }
+
+  }
+
+  if (error) {
+    return <ErrorPage />;
   }
 
   if (organizePhase == 1) {

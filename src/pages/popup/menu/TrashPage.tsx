@@ -20,12 +20,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import ToggleButton from "../custom/ToggleButton";
 import ListItem from "../custom/ListItem";
+import ErrorPage from "./ErrorPage";
 
 interface deletedEmails {
   name: string;
 }
 
 export default function TrashPage() {
+  const [error, setError] = useState(false);
   const [filterList, setFilterList] = useState(["Test1", "Test2"]);
   const [storeList, setStoreList] = useState([
     "Store1",
@@ -60,20 +62,35 @@ export default function TrashPage() {
     if (minDiscount > maxDiscount) {
       return;
     }
-    console.log("Selected Filters: ", selectedFilters);
-    console.log("Selected Stores: ", selectedStores);
-    console.log("Min Discount: ", minDiscount);
-    console.log("Max Discount: ", maxDiscount);
+
     setLoading(true);
+  
     async function deleteEmails() {
-      console.log("Deleting Emails");
       await new Promise((resolve) => setTimeout(resolve, 2000));
+      // const deletedEmailsResponse = await fetch("http://localhost:5000/deletedEmails",{
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     filters: selectedFilters,
+      //     discount: [minDiscount, maxDiscount],
+      //     stores: selectedStores,
+      //   }),
+      // });
+      // const deletedEmailsData = await deletedEmailsResponse.json();
+      // setDeletedEmails(deletedEmailsData);
       setSelectedFilters([]);
       setSelectedStores([]);
       setLoading(false);
       setDeletePhase(1);
     }
-    deleteEmails();
+    try {
+      deleteEmails();
+    }
+    catch (e) {
+      setError(true);
+    }
   }
 
   function handleDeleteConfirmation() {
@@ -81,6 +98,14 @@ export default function TrashPage() {
     async function confirmDeleteEmails() {
       console.log("Deleting Emails");
       await new Promise((resolve) => setTimeout(resolve, 2000));
+      // await fetch("http://localhost:5000/deletedEmails", {
+      //   method: "DELETE",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(deletedEmails),
+      // });
+      setDeletedEmails([]);
       setLoading(false);
       setDeletePhase(2);
       await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -91,6 +116,12 @@ export default function TrashPage() {
 
   function handleCancel() {
     setDeletePhase(0);
+  }
+
+  if (error) {
+    return (
+      <ErrorPage />
+    )
   }
 
   if (deletePhase == 1) {

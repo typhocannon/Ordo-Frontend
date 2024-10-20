@@ -5,6 +5,7 @@ import '@assets/styles/tailwind.css';
 import Popup from '@pages/popup/Popup';
 import { ChakraProvider } from '@chakra-ui/react';
 import customTheme from "./theme";
+import { PageProvider } from './context/PageProvider';
 
 function init() {
   const rootContainer = document.querySelector("#__root");
@@ -12,7 +13,9 @@ function init() {
   const root = createRoot(rootContainer);
   root.render(
     <ChakraProvider theme={customTheme}>
-      <Popup />
+      <PageProvider>
+        <Popup />
+      </PageProvider>
     </ChakraProvider>
   );
 }

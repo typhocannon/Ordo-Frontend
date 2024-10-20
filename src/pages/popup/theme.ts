@@ -14,7 +14,7 @@ const theme = extendTheme({
           },
           _active: {
             bg: "#104490",          // Background on click
-          }
+          },
         },
       },
     },

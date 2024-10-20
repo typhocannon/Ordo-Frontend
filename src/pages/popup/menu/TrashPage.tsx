@@ -44,22 +44,34 @@ export default function TrashPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    const parseFilterData = (labels: any[]) => {
+      return labels.map(label => {
+          let labelName = label.name;
+          if (labelName.startsWith('CATEGORY_')) {
+              labelName = labelName.replace('CATEGORY_', '');
+          }
+          return labelName;
+      });
+    };
+
     const fetchFilters = async () => {
-      // const response = await fetch("http://localhost:5000/filters");
-      // const data = await response.json();
-      // setFilterList(data);
+      const response = await fetch("http://127.0.0.1:5001/ordo-ai/us-central1/filters");
+      const data = await response.json();
+      const filterList = parseFilterData(data)
+      setFilterList(filterList);
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      setFilterList(["Test1", "Test2", "Test3", "Test4", "Test5", "Test2", "Test3", "Test4", "Test5", "Test2", "Test3", "Test4", "Test5", "Test2", "Test3", "Test4", "Test5", "Test2", "Test3", "Test4", "Test5", "Test2", "Test3", "Test4", "Test5"]);
+      // setFilterList(["Test1", "Test2", "Test3", "Test4", "Test5", "Test2", "Test3", "Test4", "Test5", "Test2", "Test3", "Test4", "Test5", "Test2", "Test3", "Test4", "Test5", "Test2", "Test3", "Test4", "Test5", "Test2", "Test3", "Test4", "Test5"]);
     };
 
     const fetchStores = async () => {
-      // const response = await fetch("http://localhost:5000/stores");
-      // const data = await response.json();
-      // setStoreList(data);
+      const response = await fetch("http://127.0.0.1:5001/ordo-ai/us-central1/stores");
+      const data = await response.json();
+      setStoreList(data);
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      setStoreList(["Adidas", "Nike", "Hollister", "Supreme", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo"]);
+      // setStoreList(["Adidas", "Nike", "Hollister", "Supreme", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo", "Uniqlo"]);
     };
     try {
+      // console.log('hello')
       fetchFilters();
       fetchStores();
     } catch (e) {

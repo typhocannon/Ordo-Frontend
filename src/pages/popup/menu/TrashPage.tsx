@@ -18,6 +18,12 @@ import {
 import { faTrash, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
+import ToggleButton from "../custom/ToggleButton";
+import ListItem from "../custom/ListItem";
+
+interface deletedEmails {
+  name: string;
+}
 
 export default function TrashPage() {
   const [filterList, setFilterList] = useState(["Test1", "Test2"]);
@@ -29,6 +35,21 @@ export default function TrashPage() {
     "Store2",
   ]);
 
+  const [selectedFilters, setSelectedFilters] = useState([] as string[]);
+  const [selectedStores, setSelectedStores] = useState([] as string[]);
+
+  const [deletedEmails, setDeletedEmails] = useState([
+    { name: "Test9gskdfskfdsgjkfdsjkglfdslkghfsdkljh" },
+    { name: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" },
+    { name: "Test3" },
+    { name: "Test4" },
+    { name: "Test5" },
+    { name: "Test6" },
+    { name: "Test7" },
+    { name: "Test8" },
+    { name: "Test9gskdfskfdsgjkfdsjkglfdslkghfsdkljh" },
+  ] as deletedEmails[]);
+
   const [minDiscount, setMinDiscount] = useState(0);
   const [maxDiscount, setMaxDiscount] = useState(100);
 
@@ -37,12 +58,18 @@ export default function TrashPage() {
 
   function handleDelete() {
     if (minDiscount > maxDiscount) {
-        return
+      return;
     }
+    console.log("Selected Filters: ", selectedFilters);
+    console.log("Selected Stores: ", selectedStores);
+    console.log("Min Discount: ", minDiscount);
+    console.log("Max Discount: ", maxDiscount);
     setLoading(true);
     async function deleteEmails() {
       console.log("Deleting Emails");
       await new Promise((resolve) => setTimeout(resolve, 2000));
+      setSelectedFilters([]);
+      setSelectedStores([]);
       setLoading(false);
       setDeletePhase(1);
     }
@@ -83,25 +110,13 @@ export default function TrashPage() {
           </Text>
         </Box>
         <Box>
-          <VStack h={260} bg="lightgray" overflow="auto" my={4} py={2}>
-            <Text>Test Email 1</Text>
-            <Text>Test Email 2</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-          </VStack>
+          <Box h={260} p={4} m={4} bg="lightgray" overflow="auto">
+            <VStack gap={4}>
+            {deletedEmails.map((email) => {
+                return <ListItem name={email.name} currentList={deletedEmails} setList={setDeletedEmails} />
+            })}
+            </VStack>
+          </Box>
         </Box>
         <HStack gap={6} justify="center">
           {!loading ? (
@@ -173,11 +188,9 @@ export default function TrashPage() {
             Categories
           </Text>
           <Wrap p={2}>
-            {filterList.map((filter, index) => (
+            {filterList.map((filter) => (
               <WrapItem>
-                <Button rounded="lg" size="xs" key={index}>
-                  {filter}
-                </Button>
+                <ToggleButton name={filter} setList={setSelectedFilters} />
               </WrapItem>
             ))}
           </Wrap>
@@ -186,7 +199,15 @@ export default function TrashPage() {
           <Text fontWeight="bold">Promotions</Text>
           <Text fontWeight="bold">Discount (%)</Text>
           <HStack p={2}>
-            <NumberInput size="xs" maxW={16} defaultValue={0} min={0} max={100} value={minDiscount} onChange={(valueString) => setMinDiscount(Number(valueString))}>
+            <NumberInput
+              size="xs"
+              maxW={16}
+              defaultValue={0}
+              min={0}
+              max={100}
+              value={minDiscount}
+              onChange={(valueString) => setMinDiscount(Number(valueString))}
+            >
               <NumberInputField />
               <NumberInputStepper>
                 <NumberIncrementStepper />
@@ -194,7 +215,15 @@ export default function TrashPage() {
               </NumberInputStepper>
             </NumberInput>
             <Text fontSize="lg"> -- </Text>
-            <NumberInput size="xs" maxW={16} defaultValue={100} min={0} max={100} value={maxDiscount} onChange={(valueString) => setMaxDiscount(Number(valueString))}>
+            <NumberInput
+              size="xs"
+              maxW={16}
+              defaultValue={100}
+              min={0}
+              max={100}
+              value={maxDiscount}
+              onChange={(valueString) => setMaxDiscount(Number(valueString))}
+            >
               <NumberInputField />
               <NumberInputStepper>
                 <NumberIncrementStepper />
@@ -205,11 +234,9 @@ export default function TrashPage() {
           <Box>
             <Text>Store</Text>
             <Wrap>
-              {storeList.map((store, index) => (
+              {storeList.map((store) => (
                 <WrapItem>
-                  <Button rounded="lg" size="xs" key={index}>
-                    {store}
-                  </Button>
+                  <ToggleButton name={store} setList={setSelectedStores} />
                 </WrapItem>
               ))}
             </Wrap>

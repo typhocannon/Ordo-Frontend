@@ -10,10 +10,24 @@ import {
 import { faCircleCheck, faGear } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
+import ListItem from "../custom/ListItem";
+
+interface label {
+  name: string;
+  color: string;
+}
 
 export default function OrganizePage() {
   const [organizePhase, setOrganizePhase] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [labels, setLabels] = useState([
+    { name: "Schoolgsajfghfdsjglkdfsjlh", color: "red" },
+    { name: "School", color: "orange" },
+    { name: "Parent", color: "yellow" },
+    { name: "Store", color: "green" },
+    { name: "Nike", color: "blue" },
+    { name: "Adidas", color: "purple" },
+  ] as label[]);
 
   function handleCancel() {
     setOrganizePhase(0);
@@ -60,36 +74,34 @@ export default function OrganizePage() {
           </Text>
         </Box>
         <Box>
-          <VStack h={260} bg="lightgray" overflow="auto" my={4} py={2}>
-            <Text>Test Email 1</Text>
-            <Text>Test Email 2</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-            <Text>Test Email 3</Text>
-          </VStack>
+          <Box h={260} p={4} m={4} bg="lightgray" overflow="auto">
+            <VStack gap={4}>
+              {labels.map((currentLabel) => {
+                return (
+                  <ListItem
+                    name={currentLabel.name}
+                    currentList={labels}
+                    setList={setLabels}
+                    color={currentLabel.color}
+                  />
+                );
+              })}
+            </VStack>
+          </Box>
         </Box>
         <HStack gap={6} justify="center">
           {!loading ? (
             <>
-          <Button onClick={handleCancel} isDisabled={loading} variant="outline">
-            Cancel
-          </Button>
-            <Button isLoading={loading} onClick={handleOrganizeConfirmation}>
-              Delete
-            </Button>
-            
+              <Button
+                onClick={handleCancel}
+                isDisabled={loading}
+                variant="outline"
+              >
+                Cancel
+              </Button>
+              <Button isLoading={loading} onClick={handleOrganizeConfirmation}>
+                Organize
+              </Button>
             </>
           ) : (
             <Spinner
@@ -120,7 +132,7 @@ export default function OrganizePage() {
           <VStack gap={0} justify="center" align="center">
             <Text fontSize="xl">Items</Text>
             <Text fontSize="xl">Successfully</Text>
-            <Text fontSize="xl">Deleted</Text>
+            <Text fontSize="xl">Organized</Text>
             <Box p={4}>
               <FontAwesomeIcon size="4x" icon={faCircleCheck} color="#3BE23A" />
             </Box>
